@@ -12,22 +12,19 @@ import (
 
 var outputDir = os.TempDir()
 var diff1 = "60d8383..dd0b2ff"
-var repo = "/Users/harry/dev/data/www/bigecko/hunt"
+
+var repoRoot string
 
 func main() {
-	// dir, err := os.Getwd()
+	output, err := exec.Command("git", "rev-parse", "--show-toplevel").Output()
+	if err != nil {
+		panic(err)
+	}
+	repoRoot = strings.Trim(string(output), "\n")
 
-	os.Chdir(repo)
+	os.Chdir(repoRoot)
 
 	export(filelog(diff1))
-
-	fmt.Printf("repo name: %s \n", repoName())
-
-	fmt.Printf("output dir: %s\n", outputDir)
-
-	fmt.Printf("outdir name: %s \n", outDirName())
-
-	fmt.Println("end")
 }
 
 func filelog(diff string) []string {
@@ -41,21 +38,10 @@ func filelog(diff string) []string {
 	return files
 }
 
-func repoName() string {
-	repoRoot, err := exec.Command("git", "rev-parse", "--show-toplevel").Output()
-	if err != nil {
-		panic(err)
-	}
-
-	return strings.Trim(path.Base(string(repoRoot)), "\n")
-}
-
 func outDirName() string {
-
-	t := time.Now()
-	outdir := repoName() + "-" + t.Format("20060102150405")
-
-	return outdir
+	repoName := strings.Trim(path.Base(string(repoRoot)), "\n")
+	dirName := repoName + "-" + time.Now().Format("20060102150405")
+	return dirName
 }
 
 func export(files []string) {
@@ -71,18 +57,18 @@ func export(files []string) {
 			if opt == "D" {
 				deletes = append(deletes, file)
 			} else {
-				src := path.Join(repo, file)
+				src := path.Join(repoRoot, file)
 				dst := path.Join(destDir, file)
 				copyFileContents(src, dst)
 			}
 		}
 	}
 
+	fmt.Printf("Exported to: %s\n", destDir)
+
 	if len(deletes) > 0 {
 		fmt.Printf("Deleted files: \n %s \n", strings.Join(deletes, "\n"))
 	}
-
-	fmt.Printf("Exported to: %s\n", destDir)
 }
 
 // https://stackoverflow.com/a/21067803/157811
