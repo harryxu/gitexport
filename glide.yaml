@@ -1,1 +1,4 @@
-package: .
+package: github.com/harryxu/gitexport
+import:
+- package: github.com/spf13/cobra
+- package: github.com/inconshreveable/mousetrap

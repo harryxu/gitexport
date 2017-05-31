@@ -8,14 +8,26 @@ import (
 	"path"
 	"strings"
 	"time"
+
+	"github.com/spf13/cobra"
 )
 
 var outputDir = os.TempDir()
-var diff1 = "60d8383..dd0b2ff"
+var revison string
 
 var repoRoot string
 
+// RootCmd Default Command
+var RootCmd = &cobra.Command{
+	Use: "gitexport -r [revison]",
+	Run: func(cmd *cobra.Command, args []string) {
+		export(filelog(revison))
+	},
+}
+
 func main() {
+	RootCmd.PersistentFlags().StringVarP(&revison, "revision", "r", "", "Revision as git diff")
+
 	output, err := exec.Command("git", "rev-parse", "--show-toplevel").Output()
 	if err != nil {
 		panic(err)
@@ -24,7 +36,7 @@ func main() {
 
 	os.Chdir(repoRoot)
 
-	export(filelog(diff1))
+	RootCmd.Execute()
 }
 
 func filelog(diff string) []string {
