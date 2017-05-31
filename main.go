@@ -70,6 +70,10 @@ func export(files []string) {
 
 			if opt == "D" {
 				deletes = append(deletes, file)
+			} else {
+				src := path.Join(repo, file)
+				dst := path.Join(destDir, file)
+				copyFileContents(src, dst)
 			}
 		}
 	}
@@ -85,12 +89,15 @@ func export(files []string) {
 func copyFileContents(src, dst string) (err error) {
 	in, err := os.Open(src)
 	if err != nil {
-		return
+		panic(err)
 	}
 	defer in.Close()
+
+	os.MkdirAll(path.Dir(dst), os.ModePerm)
+
 	out, err := os.Create(dst)
 	if err != nil {
-		return
+		panic(err)
 	}
 	defer func() {
 		cerr := out.Close()
@@ -99,7 +106,7 @@ func copyFileContents(src, dst string) (err error) {
 		}
 	}()
 	if _, err = io.Copy(out, in); err != nil {
-		return
+		panic(err)
 	}
 	err = out.Sync()
 	return
