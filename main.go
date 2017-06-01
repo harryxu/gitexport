@@ -128,6 +128,7 @@ func openDir(path string) {
 
 	if osname == "windows" {
 		command = "explorer.exe"
+		path = strings.Replace(path, "/", "\\", -1)
 	} else if osname == "darwin" {
 		command = "open"
 	} else if osname == "linux" {
