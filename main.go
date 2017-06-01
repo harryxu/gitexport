@@ -9,6 +9,8 @@ import (
 	"strings"
 	"time"
 
+	"runtime"
+
 	"github.com/spf13/cobra"
 )
 
@@ -116,6 +118,23 @@ func export(files []string) {
 	if len(deletes) > 0 {
 		fmt.Printf("Deleted files: \n %s \n", strings.Join(deletes, "\n"))
 	}
+
+	openDir(destDir)
+}
+
+func openDir(path string) {
+	osname := runtime.GOOS
+	var command string
+
+	if osname == "windows" {
+		command = "explorer.exe"
+	} else if osname == "darwin" {
+		command = "open"
+	} else if osname == "linux" {
+		command = "xdg-open"
+	}
+
+	exec.Command(command, path).Run()
 }
 
 // https://stackoverflow.com/a/21067803/157811
