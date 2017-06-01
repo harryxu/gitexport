@@ -21,6 +21,9 @@ var repoRoot string
 var RootCmd = &cobra.Command{
 	Use: "gitexport -r [revison]",
 	Run: func(cmd *cobra.Command, args []string) {
+		if strings.TrimSpace(revison) == "" {
+			revison = defaultDiff()
+		}
 		export(filelog(revison))
 	},
 }
@@ -39,7 +42,9 @@ func main() {
 	RootCmd.Execute()
 }
 
+// Get files list by git diff.
 func filelog(diff string) []string {
+	fmt.Printf("diff %s\n", diff)
 	output, err := exec.Command("git", "diff", "--name-status", diff).Output()
 	if err != nil {
 		panic(err)
@@ -48,6 +53,36 @@ func filelog(diff string) []string {
 	files := strings.Split(string(output), "\n")
 
 	return files
+}
+
+func getLatestRevHash() string {
+	output, err := exec.Command("git", "log", "--pretty=format:%h", "-n1").Output()
+	if err != nil {
+		panic(err)
+	}
+
+	rev := string(output)
+	if len(rev) == 0 {
+		return ""
+	}
+
+	return rev
+}
+
+func getRevisionByStep(lastStep string) string {
+	output, err := exec.Command("git", "log",
+		"--pretty=format:%h",
+		"-n1",
+		"--skip="+lastStep).Output()
+	if err != nil {
+		panic(err)
+	}
+
+	return string(output)
+}
+
+func defaultDiff() string {
+	return getRevisionByStep("1") + ".." + getLatestRevHash()
 }
 
 func outDirName() string {
