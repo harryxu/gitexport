@@ -1,6 +1,4 @@
-# Borrowed from: 
-# https://github.com/silven/go-example/blob/master/Makefile
-# https://vic.demuzere.be/articles/golang-makefile-crosscompile/
+# https://gist.github.com/turtlemonvh/38bd3d73e61769767c35931d8c70ccb4
 
 BINARY = gitexport
 GOARCH = amd64
@@ -8,6 +6,8 @@ GOARCH = amd64
 # Symlink into GOPATH
 CURRENT_DIR=$(shell pwd)
 BUILD_DIR=${CURRENT_DIR}/bin
+
+LDFLAGS = -ldflags "-s -w"
 
 # Build the project
 all: clean linux darwin windows

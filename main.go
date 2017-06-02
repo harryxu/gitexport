@@ -26,12 +26,18 @@ var RootCmd = &cobra.Command{
 		if strings.TrimSpace(revison) == "" {
 			revison = defaultDiff()
 		}
+		if strings.TrimSpace(outputDir) == "" {
+			outputDir = os.TempDir()
+		}
+
+		fmt.Printf("output %s \n", outputDir)
 		export(filelog(revison))
 	},
 }
 
 func main() {
 	RootCmd.PersistentFlags().StringVarP(&revison, "revision", "r", "", "Revision as git diff")
+	RootCmd.PersistentFlags().StringVarP(&outputDir, "out", "o", os.TempDir(), "Output dir")
 
 	output, err := exec.Command("git", "rev-parse", "--show-toplevel").Output()
 	if err != nil {
