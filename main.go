@@ -114,7 +114,9 @@ func export(files []string) {
 			} else {
 				src := path.Join(repoRoot, file)
 				dst := path.Join(destDir, file)
-				copyFileContents(src, dst)
+				if _, err := os.Stat(src); err == nil {
+					copyFileContents(src, dst)
+				}
 			}
 		}
 	}
