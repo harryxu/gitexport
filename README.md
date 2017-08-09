@@ -12,6 +12,12 @@ gitexport 将 `commits` 之间发生过变化或者新增的文件导出到指�
 
 
 
+参考原[Python版](https://github.com/jeffxu/git-toolkit/blob/master/gitexport.py)。
+
+## 下载
+
+[Release](https://github.com/harryxu/gitexport/releases) 页面可以直接下载编译后的文件，下载后建议奖文件改名为`gitexport`， 然后放到系统 `PATH` 目录中。
+
 ## 使用方法
 
 * `gitexport -r <commit>` 
