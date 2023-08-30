@@ -10,13 +10,16 @@ BUILD_DIR=${CURRENT_DIR}/bin
 LDFLAGS = -ldflags "-s -w"
 
 # Build the project
-all: clean linux darwin windows
+all: clean linux darwin windows apple
 
 linux: 
 	GOOS=linux GOARCH=${GOARCH} go build ${LDFLAGS} -o ${BUILD_DIR}/${BINARY}-linux-${GOARCH} . ; 
 
-darwin:
-	GOOS=darwin GOARCH=${GOARCH} go build ${LDFLAGS} -o ${BUILD_DIR}/${BINARY}-darwin-${GOARCH} . ; 
+darwinx64:
+	GOOS=darwin GOARCH=amd64 go build ${LDFLAGS} -o ${BUILD_DIR}/${BINARY}-darwinx64 . ; 
+
+darwinarm64:
+	GOOS=darwin GOARCH=arm64 go build ${LDFLAGS} -o ${BUILD_DIR}/${BINARY}-darwinarm64 . ;
 
 windows:
 	GOOS=windows GOARCH=${GOARCH} go build ${LDFLAGS} -o ${BUILD_DIR}/${BINARY}-windows-${GOARCH}.exe . ; 
